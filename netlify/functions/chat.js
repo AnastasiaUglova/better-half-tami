@@ -395,6 +395,14 @@ exports.handler = async (event) => {
     }
   }
 
+  // Lightweight gate check from the UI (no model call). Reaching here means the
+  // access code passed or the gate is disabled, so a ping just confirms access.
+  try {
+    if (JSON.parse(event.body || "{}").ping) {
+      return { statusCode: 200, headers, body: JSON.stringify({ ok: true }) };
+    }
+  } catch {}
+
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     return {
