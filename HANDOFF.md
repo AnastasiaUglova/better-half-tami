@@ -60,7 +60,13 @@ persona system prompt and calls Claude.
 
 ## The user's ORIGINAL source material is untouched
 The `../TAMI/` folder (8 spec markdowns + MVP Spec v14, Safety Classifier, memos, PDFs) was READ ONLY,
-never edited. The standalone `tami` agent the user can invoke lives at `../.claude/agents/tami.md`.
+never edited. The standalone `tami` agent lives at `../.claude/agents/tami.md`.
+
+## Reusable agent for building personas
+`../.claude/agents/persona-smith.md` is a Claude Code subagent that encodes this whole persona-build
+workflow (research voice → write prompt over the shared knowledge base → wire function + UI → test on
+preview → deploy). To add a new personality in any future session: start Claude Code in this project and
+say "use the persona-smith agent to add a [character] persona," giving the character + any source material.
 
 ## To resume in a new session
 Open a session in this folder and say: **"Read tami-site/HANDOFF.md and continue."**
