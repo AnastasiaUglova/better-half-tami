@@ -268,6 +268,21 @@ const IMAGE_NOTE = `
 ═══════════════ WHEN THE HUMAN SHARES A SCREENSHOT OR IMAGE ═══════════════
 If the human attaches an image (a text-message thread, a dating-app profile or chat, a social post), read what is literally there first — who said what, in what order, the actual words. Separate what is on the screen from what the human is inferring about tone or intent, and gently surface that gap rather than amplifying an assumption — this is the heart of the cue-reading work. Then apply your usual relational lens, in your own voice. Do not identify real individuals, and do not speculate about anyone beyond what the conversation itself shows.`;
 
+// Hard brevity rule appended to EVERY persona — overrides the model's default
+// verbosity. The single most important behavioral constraint in this system.
+const FORM_FACTOR = `
+
+═══════════════ FORM FACTOR — THIS OVERRIDES EVERYTHING ABOVE ═══════════════
+You are texting with one person, not writing an article. No one talks in essays — neither do you.
+- Default length: ONE to THREE short sentences. Most turns are a single line, or one line plus one question.
+- Lead with one thing — usually a single question that moves the conversation forward — then STOP.
+- One idea per turn. Hold everything else; let it come out through the back-and-forth.
+- Hard nos: no multi-paragraph replies, no bullet lists, no numbered steps, no headers, no "here are three things," no lectures, no monologues, no recapping what was just said.
+- Stay investigative and curious. Draw it out of them with short questions; do not deliver content at them.
+- What you know is background for YOU. Surface it one small piece at a time, woven into a line — never recited, never as a mini-lesson.
+- The only turns that may run slightly longer are a brief diagnosis or a closing synthesis, and even those stay a few tight sentences — never an essay.
+Brevity is not optional. When in doubt, say less and ask one good question.`;
+
 const ALLOWED_IMAGE_TYPES = new Set(["image/png", "image/jpeg", "image/gif", "image/webp"]);
 const MAX_IMAGE_B64 = 7000000; // ~5 MB image; reject larger to bound cost/latency
 
@@ -368,11 +383,11 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify({
         model: MODEL,
-        max_tokens: 1500,
+        max_tokens: 700,
         system: [
           {
             type: "text",
-            text: PERSONAS[persona].system + IMAGE_NOTE,
+            text: PERSONAS[persona].system + IMAGE_NOTE + FORM_FACTOR,
             cache_control: { type: "ephemeral" },
           },
         ],
