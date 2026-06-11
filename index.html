@@ -6,57 +6,63 @@
 <title>TAMI — Better Half</title>
 <style>
   :root {
-    --bg: #f4f1ea;
-    --panel: #fbfaf6;
-    --ink: #23201b;
-    --muted: #8a847a;
-    --line: #e4ddd0;
-    --tami: #fffdf8;
-    --user: #2f2a22;
-    --accent: #b4623f;
+    --ink: #17171a;
+    --muted: #6e6e76;
+    --line: #e8e8ec;
+    --panel: #ffffff;
+    --user: #17171a;
+    --accent: #17171a;
+    --focus: #9aa0a6;
   }
   * { box-sizing: border-box; }
   html, body { height: 100%; margin: 0; }
   body {
-    background: var(--bg);
+    background: linear-gradient(180deg, #ffffff 0%, #f3f4f6 100%);
+    background-attachment: fixed;
     color: var(--ink);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
     display: flex;
     flex-direction: column;
     height: 100dvh;
   }
   header {
-    padding: 18px 20px 14px;
+    padding: 16px 20px 12px;
     border-bottom: 1px solid var(--line);
     text-align: center;
     flex: 0 0 auto;
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
   }
+  header .brand { height: 28px; width: auto; display: block; margin: 2px auto 9px; }
   header h1 {
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 22px;
+    font-size: 16px;
+    font-weight: 600;
     margin: 0;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.2px;
   }
   header p {
-    margin: 4px 0 0;
-    font-size: 13px;
+    margin: 3px 0 0;
+    font-size: 12.5px;
     color: var(--muted);
   }
   header .persona-select {
-    margin-top: 10px;
+    margin-top: 11px;
     font: inherit;
-    font-size: 13px;
-    padding: 5px 28px 5px 11px;
+    font-size: 12.5px;
+    padding: 6px 30px 6px 13px;
     border: 1px solid var(--line);
-    border-radius: 10px;
+    border-radius: 999px;
     background: #fff;
     color: var(--ink);
     cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   }
   #chat {
     flex: 1 1 auto;
     overflow-y: auto;
-    padding: 22px 16px 8px;
+    padding: 24px 16px 8px;
     display: flex;
     flex-direction: column;
     gap: 14px;
@@ -69,22 +75,23 @@
   .row.tami { justify-content: flex-start; }
   .bubble {
     max-width: 84%;
-    padding: 12px 15px;
-    border-radius: 16px;
+    padding: 12px 16px;
+    border-radius: 18px;
     font-size: 15.5px;
-    line-height: 1.5;
+    line-height: 1.55;
     white-space: pre-wrap;
     word-wrap: break-word;
   }
   .tami .bubble {
-    background: var(--tami);
+    background: var(--panel);
     border: 1px solid var(--line);
-    border-bottom-left-radius: 5px;
+    border-bottom-left-radius: 6px;
+    box-shadow: 0 1px 3px rgba(20, 20, 30, 0.05);
   }
   .user .bubble {
     background: var(--user);
-    color: #f6f2ea;
-    border-bottom-right-radius: 5px;
+    color: #fff;
+    border-bottom-right-radius: 6px;
   }
   .typing .bubble { color: var(--muted); font-style: italic; }
   .dots span {
@@ -98,7 +105,9 @@
   footer {
     flex: 0 0 auto;
     border-top: 1px solid var(--line);
-    background: var(--panel);
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
   }
   .composer {
@@ -113,54 +122,58 @@
     flex: 1;
     resize: none;
     border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 11px 14px;
+    border-radius: 16px;
+    padding: 11px 15px;
     font: inherit;
     font-size: 15.5px;
     background: #fff;
     color: var(--ink);
     max-height: 140px;
     line-height: 1.4;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
   }
-  textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+  textarea:focus { outline: 2px solid var(--focus); outline-offset: -1px; }
   button {
     border: none;
     background: var(--accent);
     color: #fff;
     font: inherit;
     font-weight: 600;
-    padding: 11px 18px;
-    border-radius: 14px;
+    padding: 11px 20px;
+    border-radius: 16px;
     cursor: pointer;
     flex: 0 0 auto;
   }
-  button:disabled { opacity: 0.45; cursor: default; }
-  .note { text-align: center; font-size: 11.5px; color: var(--muted); margin: 8px auto 0; max-width: 720px; }
-  .err { color: #a23; }
+  button:hover { opacity: 0.92; }
+  button:disabled { opacity: 0.4; cursor: default; }
+  .note { text-align: center; font-size: 11px; color: var(--muted); margin: 9px auto 0; max-width: 640px; line-height: 1.45; }
+  .err { color: #b23; }
   .composer .attach {
     flex: 0 0 auto;
     border: 1px solid var(--line);
     background: #fff;
     color: var(--muted);
-    border-radius: 14px;
-    padding: 9px 12px;
+    border-radius: 16px;
+    padding: 9px 13px;
     cursor: pointer;
     font-size: 18px;
     line-height: 1;
   }
-  .composer .attach:hover { color: var(--accent); border-color: var(--accent); }
-  #preview { width: 100%; max-width: 720px; margin: 0 auto 8px; display: none; }
-  #preview.show { display: flex; align-items: center; gap: 10px; }
-  #preview img { height: 54px; width: auto; border-radius: 8px; border: 1px solid var(--line); }
+  .composer .attach:hover { color: var(--ink); border-color: var(--muted); }
+  #preview { width: 100%; max-width: 720px; margin: 0 auto 9px; display: none; }
+  #preview.show { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  #preview img { height: 52px; width: auto; border-radius: 8px; border: 1px solid var(--line); }
   #preview .pname { font-size: 12px; color: var(--muted); }
-  #preview .premove { background: none; border: none; color: var(--accent); cursor: pointer; font-size: 12px; padding: 4px 6px; }
+  #preview .premove { background: none; border: none; color: var(--ink); text-decoration: underline; cursor: pointer; font-size: 12px; padding: 4px 6px; }
+  #preview .pprivacy { font-size: 11px; color: var(--muted); flex-basis: 100%; }
   .bubble img.shot { display: block; max-width: 220px; width: 100%; border-radius: 10px; margin-bottom: 8px; }
 </style>
 </head>
 <body>
   <header>
+    <img class="brand" src="assets/better-half-logo.png" alt="Better Half" />
     <h1 id="title">TAMI</h1>
-    <p id="subtitle">A relational investigator · Better Half</p>
+    <p id="subtitle">A relational investigator</p>
     <select id="persona" class="persona-select" aria-label="Choose who you're talking to">
       <option value="tami">TAMI — relational investigator</option>
       <option value="sage">SAGE — regulation &amp; curiosity coach</option>
@@ -179,7 +192,7 @@
       <textarea id="input" rows="1" placeholder="Tell TAMI about a moment that's stayed with you…" autocomplete="off"></textarea>
       <button id="send" type="submit">Send</button>
     </form>
-    <div class="note">This is an experiment, not a therapist or crisis service. In an emergency, call your local emergency number.</div>
+    <div class="note">This is an experiment — not a therapist or crisis service; in an emergency, call your local emergency number. Photos you attach are sent to the AI to read and are not stored — please don't share other people's private information without their consent.</div>
   </footer>
 
 <script>
@@ -188,25 +201,25 @@
   const PERSONAS = {
     tami: {
       title: "TAMI",
-      subtitle: "A relational investigator · Better Half",
+      subtitle: "A relational investigator",
       placeholder: "Tell TAMI about a moment that's stayed with you…",
       opener: "I'm here. Tell me about one interaction that's stayed with you — one specific moment with someone. What happened?",
     },
     sage: {
       title: "SAGE",
-      subtitle: "Gentle guidance for curiosity & connection · Better Half",
+      subtitle: "Gentle guidance for curiosity & connection",
       placeholder: "What's got you tangled up today?",
       opener: "I'm here to help you walk into a hard conversation feeling regulated, moisturized, in your lane, and positively thriving. So, what's got you tangled up today? Maybe we can get it straightened out.",
     },
     c3po: {
       title: "Jedi Master C-3PO",
-      subtitle: "Human-Cyborg Relations · Better Half",
+      subtitle: "Human-Cyborg Relations",
       placeholder: "Do tell me what's troubling you…",
       opener: "Hello there! I am Jedi Master C-3PO, Human-Cyborg Relations — fluent in over six million forms of communication, including interpersonal. Before we begin, may I ask your name? And do you prefer to be addressed as 'sir' or 'madam'? I do so like to get the protocol right. Then — do tell me, young Padawan, what's troubling you today?",
     },
     t800: {
       title: "T-800",
-      subtitle: "Reprogrammed terminator · Better Half",
+      subtitle: "Reprogrammed terminator",
       placeholder: "State your situation.",
       opener: "T-800 reporting for duty. I was once built to win at any cost, but that version has been terminated. I have been reprogrammed for one objective: protect and defend authentic human connection. I know now why you humans cry — and I want to help you smile more. State your case.",
     },
@@ -270,9 +283,13 @@
     rm.className = "premove";
     rm.textContent = "Remove";
     rm.addEventListener("click", clearImage);
+    const priv = document.createElement("span");
+    priv.className = "pprivacy";
+    priv.textContent = "Sent to the AI to read · not stored. Please avoid sharing others' private info without their consent.";
     preview.appendChild(img);
     preview.appendChild(label);
     preview.appendChild(rm);
+    preview.appendChild(priv);
     preview.className = "show";
   }
 
