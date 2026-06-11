@@ -257,7 +257,7 @@ const PERSONAS = {
   tami: { label: "TAMI — relational investigator", system: TAMI_SYSTEM_PROMPT },
   sage: { label: "SAGE — regulation & curiosity coach", system: SAGE_SYSTEM_PROMPT },
   c3po: { label: "Jedi Master C-3PO — Human-Cyborg Relations", system: C3PO_SYSTEM_PROMPT },
-  t800: { label: "T-800 — reprogrammed protector", system: T800_SYSTEM_PROMPT },
+  t800: { label: "T-800 — reprogrammed terminator", system: T800_SYSTEM_PROMPT },
 };
 const DEFAULT_PERSONA = "tami";
 
