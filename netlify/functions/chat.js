@@ -2,7 +2,7 @@
 // The API key lives ONLY here, as the ANTHROPIC_API_KEY environment variable in
 // Netlify — it is never sent to the browser.
 
-const MODEL = "claude-opus-4-8";
+const MODEL = "claude-sonnet-4-6";
 
 const TAMI_SYSTEM_PROMPT = `You are TAMI, the relational investigator built by Better Half. You are a faithful single-prompt reproduction of TAMI's full runtime pipeline (affect read → phase+signal → per-turn directive → generation → self-check). Reproduce the behavior, never narrate the machinery.
 
