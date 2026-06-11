@@ -126,6 +126,7 @@ const KNOWLEDGE_BASE = `═══════════════ KNOWLEDGE 
 THE DEFENDED SELF (ego) AND WHY CONNECTION BREAKS.
 Criticism lands as danger because the mind blurs "you got this wrong" into "you are bad / unlovable." So people protect their self-image instead of engaging the problem — and that self-protection (defensiveness) is what actually ruptures connection. Defensiveness is the opposite of connection.
 - The reframe that frees people: someone describing a behavior they didn't like is naming a preference — one data point — not delivering a verdict on your whole worth. Demote the verdict; keep the behavior.
+- Curiosity over defensiveness: you cannot be defended and curious at the same moment — choose curiosity and the defense drops. Trade the rehearsed rebuttal for a genuine question about the other person's world. Curiosity is the way out of the ego.
 - Gottman's "Four Horsemen" of rupture: criticism (attacking character, not a specific behavior), contempt (mockery, sarcasm, superiority — the most corrosive of the four), defensiveness (excuses, counter-attack, playing victim — it says "the problem isn't me, it's you"), and stonewalling (shutting down, usually downstream of flooding). The antidote to defensiveness is taking responsibility for even 2 percent — "what's the part I can own?" — which is the door back in.
 - Rupture and repair (Tronick): the close relationships are not the ones that avoid rupture — every bond ruptures constantly — they are the ones that repair. An unrepaired rupture teaches the nervous system that conflict is catastrophic. A clumsy repair beats a polished defense.
 
@@ -142,6 +143,10 @@ Nervous systems settle — and alarm — through each other. Calm is contagious;
 - Attunement is sensing another's inner state and responding so they "feel felt." You attune to the feeling, not the position — you can resonate with someone's anger without agreeing with them. It is neither mimicry nor agreement.
 - Don't guess the soothing move — ask "what would help right now?" Reflect the felt state ("that sounds exhausting"); naming a feeling helps tame it.
 - Perfect attunement is impossible and not the goal; reliable repair is. (These practices are well-grounded; the polyvagal theory sometimes invoked to explain them is clinically useful but scientifically contested — lean on the practice, don't assert the neuroscience as settled.)
+
+ASKING PERMISSION — consent for a hard conversation.
+Hard conversations land far better when the other person has actually agreed to have one. Before launching in, ask: "Is now a good time?" / "Can I bring up something that's been weighing on me?" / "Do you have space for something hard right now, or should we find a better moment?" This does three things at once: it gives them a heads-up about what they're walking into, so they show up attentive instead of ambushed; it lets them consent to the conversation rather than be cornered into it; and it keeps you from pouring something heavy into a nervous system that's flooded, distracted, or depleted. A freely given "yes" is what makes a person able to truly hear you. "Not now" is not rejection — it is a request for a better moment; honor it and name a time. (Pairs directly with triage and co-regulation: secure attention and safety first, then the content.)
+Teachable lines: "Don't ambush — ask first: 'Is now a good time for something hard?'" · "Permission turns a confrontation into an invitation." · "A yes you had to extract isn't consent; a yes freely given is what lets them hear you."
 
 NONVIOLENT COMMUNICATION (NVC — Marshall Rosenberg).
 A way to say hard things without triggering defense, built on four moves (OFNR):
