@@ -42,6 +42,17 @@
     font-size: 13px;
     color: var(--muted);
   }
+  header .persona-select {
+    margin-top: 10px;
+    font: inherit;
+    font-size: 13px;
+    padding: 5px 28px 5px 11px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #fff;
+    color: var(--ink);
+    cursor: pointer;
+  }
   #chat {
     flex: 1 1 auto;
     overflow-y: auto;
@@ -130,8 +141,12 @@
 </head>
 <body>
   <header>
-    <h1>TAMI</h1>
-    <p>A relational investigator · Better Half</p>
+    <h1 id="title">TAMI</h1>
+    <p id="subtitle">A relational investigator · Better Half</p>
+    <select id="persona" class="persona-select" aria-label="Choose who you're talking to">
+      <option value="tami">TAMI — relational investigator</option>
+      <option value="sage">SAGE — regulation &amp; curiosity coach</option>
+    </select>
   </header>
 
   <div id="chat" aria-live="polite"></div>
@@ -141,21 +156,39 @@
       <textarea id="input" rows="1" placeholder="Tell TAMI about a moment that's stayed with you…" autocomplete="off"></textarea>
       <button id="send" type="submit">Send</button>
     </form>
-    <div class="note">TAMI is an experiment, not a therapist or crisis service. In an emergency, call your local emergency number.</div>
+    <div class="note">This is an experiment, not a therapist or crisis service. In an emergency, call your local emergency number.</div>
   </footer>
 
 <script>
-  const OPENER = "I'm here. Tell me about one interaction that's stayed with you — one specific moment with someone. What happened?";
+  // Personas. To add one: add an entry here AND an <option> in the header,
+  // plus a matching entry in PERSONAS inside netlify/functions/chat.js.
+  const PERSONAS = {
+    tami: {
+      title: "TAMI",
+      subtitle: "A relational investigator · Better Half",
+      placeholder: "Tell TAMI about a moment that's stayed with you…",
+      opener: "I'm here. Tell me about one interaction that's stayed with you — one specific moment with someone. What happened?",
+    },
+    sage: {
+      title: "SAGE",
+      subtitle: "Regulation & curiosity coach · Better Half",
+      placeholder: "What conversation has you tangled up right now?",
+      opener: "I'm here to help you walk into a hard conversation regulated, un-defended, and curious — that's usually what makes the difference. What situation has you tangled up right now?",
+    },
+  };
 
-  // Full message history sent to the API each turn. Seed with TAMI's opener so
-  // the model has continuity, but the API is told the conversation starts at the
-  // first user turn.
-  const history = [{ role: "assistant", content: OPENER }];
+  let current = "tami";
+  // Message history for the current persona, seeded with its opener. Reset on
+  // every persona switch. The API treats the first user turn as the start.
+  let history = [];
 
   const chat = document.getElementById("chat");
   const form = document.getElementById("form");
   const input = document.getElementById("input");
   const send = document.getElementById("send");
+  const personaSelect = document.getElementById("persona");
+  const title = document.getElementById("title");
+  const subtitle = document.getElementById("subtitle");
 
   function postChat() {
     const h = { "Content-Type": "application/json" };
@@ -164,7 +197,7 @@
     return fetch("/.netlify/functions/chat", {
       method: "POST",
       headers: h,
-      body: JSON.stringify({ messages: history }),
+      body: JSON.stringify({ messages: history, persona: current }),
     });
   }
 
@@ -185,7 +218,20 @@
     return row;
   }
 
-  addBubble("tami", OPENER);
+  function loadPersona(id) {
+    current = PERSONAS[id] ? id : "tami";
+    const p = PERSONAS[current];
+    title.textContent = p.title;
+    subtitle.textContent = p.subtitle;
+    input.placeholder = p.placeholder;
+    history = [{ role: "assistant", content: p.opener }];
+    chat.innerHTML = "";
+    addBubble("tami", p.opener);
+    input.focus();
+  }
+
+  personaSelect.addEventListener("change", () => loadPersona(personaSelect.value));
+  loadPersona(current);
 
   input.addEventListener("input", () => {
     input.style.height = "auto";
