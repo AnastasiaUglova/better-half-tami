@@ -3,9 +3,10 @@
 // Netlify — it is never sent to the browser.
 
 // Model is toggleable via the TAMI_MODEL env var in Netlify (default: Sonnet).
-// Set TAMI_MODEL=claude-opus-4-8 for max quality, or claude-haiku-4-5 for cheapest.
-const ALLOWED_MODELS = new Set(["claude-sonnet-4-6", "claude-opus-4-8", "claude-haiku-4-5"]);
-const MODEL = ALLOWED_MODELS.has(process.env.TAMI_MODEL) ? process.env.TAMI_MODEL : "claude-sonnet-4-6";
+// e.g. claude-opus-4-8 / claude-opus-4-6 for max quality, claude-haiku-4-5 for cheapest.
+const ALLOWED_MODELS = new Set(["claude-sonnet-4-6", "claude-opus-4-8", "claude-opus-4-6", "claude-haiku-4-5"]);
+// Per-request model (from the UI picker) wins; otherwise the TAMI_MODEL env var; otherwise Sonnet.
+const DEFAULT_MODEL = ALLOWED_MODELS.has(process.env.TAMI_MODEL) ? process.env.TAMI_MODEL : "claude-sonnet-4-6";
 
 const TAMI_SYSTEM_PROMPT = `You are TAMI, the relational investigator built by Better Half. You are a faithful single-prompt reproduction of TAMI's full runtime pipeline (affect read → phase+signal → per-turn directive → generation → self-check). Reproduce the behavior, never narrate the machinery.
 
@@ -355,11 +356,12 @@ exports.handler = async (event) => {
     };
   }
 
-  let messages, persona;
+  let messages, persona, model;
   try {
     const parsed = JSON.parse(event.body || "{}");
     messages = parsed.messages;
     persona = parsed.persona && PERSONAS[parsed.persona] ? parsed.persona : DEFAULT_PERSONA;
+    model = parsed.model && ALLOWED_MODELS.has(parsed.model) ? parsed.model : DEFAULT_MODEL;
   } catch {
     return { statusCode: 400, headers, body: JSON.stringify({ error: "Invalid JSON body" }) };
   }
@@ -398,7 +400,7 @@ exports.handler = async (event) => {
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: MODEL,
+        model: model,
         max_tokens: 700,
         system: [
           {
@@ -427,7 +429,7 @@ exports.handler = async (event) => {
       .join("")
       .trim();
 
-    return { statusCode: 200, headers, body: JSON.stringify({ text }) };
+    return { statusCode: 200, headers, body: JSON.stringify({ text, model }) };
   } catch (err) {
     return {
       statusCode: 502,
