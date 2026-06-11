@@ -1,0 +1,10 @@
+# Netlify configuration for the TAMI test site.
+# Static files are served from the site root; the chat proxy is a serverless function.
+
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+# No build step — this is a plain static page plus one function.
+[build.environment]
+  NODE_VERSION = "20"
