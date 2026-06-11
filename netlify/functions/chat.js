@@ -4,7 +4,7 @@
 
 // Model is toggleable via the TAMI_MODEL env var in Netlify (default: Sonnet).
 // e.g. claude-opus-4-8 / claude-opus-4-6 for max quality, claude-haiku-4-5 for cheapest.
-const ALLOWED_MODELS = new Set(["claude-sonnet-4-6", "claude-opus-4-8", "claude-opus-4-6", "claude-haiku-4-5"]);
+const ALLOWED_MODELS = new Set(["claude-sonnet-4-6", "claude-opus-4-8", "claude-opus-4-6", "claude-haiku-4-5", "claude-fable-5"]);
 // Per-request model (from the UI picker) wins; otherwise the TAMI_MODEL env var; otherwise Sonnet.
 const DEFAULT_MODEL = ALLOWED_MODELS.has(process.env.TAMI_MODEL) ? process.env.TAMI_MODEL : "claude-sonnet-4-6";
 
