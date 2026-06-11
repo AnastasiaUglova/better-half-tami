@@ -137,6 +137,24 @@
   button:disabled { opacity: 0.45; cursor: default; }
   .note { text-align: center; font-size: 11.5px; color: var(--muted); margin: 8px auto 0; max-width: 720px; }
   .err { color: #a23; }
+  .composer .attach {
+    flex: 0 0 auto;
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--muted);
+    border-radius: 14px;
+    padding: 9px 12px;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+  }
+  .composer .attach:hover { color: var(--accent); border-color: var(--accent); }
+  #preview { width: 100%; max-width: 720px; margin: 0 auto 8px; display: none; }
+  #preview.show { display: flex; align-items: center; gap: 10px; }
+  #preview img { height: 54px; width: auto; border-radius: 8px; border: 1px solid var(--line); }
+  #preview .pname { font-size: 12px; color: var(--muted); }
+  #preview .premove { background: none; border: none; color: var(--accent); cursor: pointer; font-size: 12px; padding: 4px 6px; }
+  .bubble img.shot { display: block; max-width: 220px; width: 100%; border-radius: 10px; margin-bottom: 8px; }
 </style>
 </head>
 <body>
@@ -154,7 +172,10 @@
   <div id="chat" aria-live="polite"></div>
 
   <footer>
+    <div id="preview"></div>
     <form class="composer" id="form">
+      <button type="button" id="attach" class="attach" title="Attach a screenshot" aria-label="Attach a screenshot">📎</button>
+      <input type="file" id="file" accept="image/png,image/jpeg,image/gif,image/webp" hidden />
       <textarea id="input" rows="1" placeholder="Tell TAMI about a moment that's stayed with you…" autocomplete="off"></textarea>
       <button id="send" type="submit">Send</button>
     </form>
@@ -203,6 +224,69 @@
   const personaSelect = document.getElementById("persona");
   const title = document.getElementById("title");
   const subtitle = document.getElementById("subtitle");
+  const attach = document.getElementById("attach");
+  const fileInput = document.getElementById("file");
+  const preview = document.getElementById("preview");
+
+  // A screenshot staged for the next message: { dataUrl, base64, mediaType }.
+  let pendingImage = null;
+
+  function handleFile(file) {
+    if (!file || !file.type.startsWith("image/")) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const MAX = 1568; // downscale large screenshots to bound tokens/latency
+        let { width, height } = img;
+        if (width > MAX || height > MAX) {
+          const s = MAX / Math.max(width, height);
+          width = Math.round(width * s);
+          height = Math.round(height * s);
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d").drawImage(img, 0, 0, width, height);
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+        pendingImage = { dataUrl, base64: dataUrl.split(",")[1], mediaType: "image/jpeg" };
+        showPreview();
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function showPreview() {
+    preview.innerHTML = "";
+    if (!pendingImage) { preview.className = ""; return; }
+    const img = document.createElement("img");
+    img.src = pendingImage.dataUrl;
+    const label = document.createElement("span");
+    label.className = "pname";
+    label.textContent = "Screenshot attached";
+    const rm = document.createElement("button");
+    rm.type = "button";
+    rm.className = "premove";
+    rm.textContent = "Remove";
+    rm.addEventListener("click", clearImage);
+    preview.appendChild(img);
+    preview.appendChild(label);
+    preview.appendChild(rm);
+    preview.className = "show";
+  }
+
+  function clearImage() {
+    pendingImage = null;
+    fileInput.value = "";
+    preview.innerHTML = "";
+    preview.className = "";
+  }
+
+  attach.addEventListener("click", () => fileInput.click());
+  fileInput.addEventListener("change", () => {
+    if (fileInput.files && fileInput.files[0]) handleFile(fileInput.files[0]);
+  });
 
   function postChat() {
     const h = { "Content-Type": "application/json" };
@@ -223,7 +307,17 @@
     if (opts.typing) {
       bubble.innerHTML = '<span class="dots"><span></span><span></span><span></span></span>';
     } else {
-      bubble.textContent = text;
+      if (opts.imageUrl) {
+        const im = document.createElement("img");
+        im.className = "shot";
+        im.src = opts.imageUrl;
+        bubble.appendChild(im);
+      }
+      if (text) {
+        const span = document.createElement("span");
+        span.textContent = text;
+        bubble.appendChild(span);
+      }
     }
     if (opts.error) bubble.classList.add("err");
     row.appendChild(bubble);
@@ -240,6 +334,7 @@
     input.placeholder = p.placeholder;
     history = [{ role: "assistant", content: p.opener }];
     chat.innerHTML = "";
+    clearImage();
     addBubble("tami", p.opener);
     input.focus();
   }
@@ -262,12 +357,25 @@
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const text = input.value.trim();
-    if (!text) return;
+    if (!text && !pendingImage) return;
 
     input.value = "";
     input.style.height = "auto";
-    addBubble("user", text);
-    history.push({ role: "user", content: text });
+
+    let userContent;
+    if (pendingImage) {
+      const blocks = [
+        { type: "image", source: { type: "base64", media_type: pendingImage.mediaType, data: pendingImage.base64 } },
+      ];
+      if (text) blocks.push({ type: "text", text });
+      userContent = blocks;
+      addBubble("user", text, { imageUrl: pendingImage.dataUrl });
+      clearImage();
+    } else {
+      userContent = text;
+      addBubble("user", text);
+    }
+    history.push({ role: "user", content: userContent });
 
     send.disabled = true;
     input.disabled = true;

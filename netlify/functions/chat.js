@@ -258,6 +258,42 @@ const PERSONAS = {
 };
 const DEFAULT_PERSONA = "tami";
 
+// Vision: every persona can read a shared screenshot (text thread, dating app, etc.).
+// Appended to whichever persona's system prompt runs.
+const IMAGE_NOTE = `
+
+═══════════════ WHEN THE HUMAN SHARES A SCREENSHOT OR IMAGE ═══════════════
+If the human attaches an image (a text-message thread, a dating-app profile or chat, a social post), read what is literally there first — who said what, in what order, the actual words. Separate what is on the screen from what the human is inferring about tone or intent, and gently surface that gap rather than amplifying an assumption — this is the heart of the cue-reading work. Then apply your usual relational lens, in your own voice. Do not identify real individuals, and do not speculate about anyone beyond what the conversation itself shows.`;
+
+const ALLOWED_IMAGE_TYPES = new Set(["image/png", "image/jpeg", "image/gif", "image/webp"]);
+const MAX_IMAGE_B64 = 7000000; // ~5 MB image; reject larger to bound cost/latency
+
+// Normalize one message's content. Strings pass through. Block arrays keep their
+// text and — only on the most recent message — valid base64 images; older images
+// collapse to a short placeholder so big payloads aren't re-sent every turn.
+function sanitizeContent(content, isLast) {
+  if (typeof content === "string") return content;
+  if (!Array.isArray(content)) return "";
+  const out = [];
+  for (const b of content) {
+    if (b && b.type === "text" && typeof b.text === "string") {
+      out.push({ type: "text", text: b.text });
+    } else if (b && b.type === "image" && b.source && b.source.type === "base64") {
+      if (!isLast) {
+        out.push({ type: "text", text: "[earlier screenshot]" });
+      } else if (
+        ALLOWED_IMAGE_TYPES.has(b.source.media_type) &&
+        typeof b.source.data === "string" &&
+        b.source.data.length > 0 &&
+        b.source.data.length < MAX_IMAGE_B64
+      ) {
+        out.push({ type: "image", source: { type: "base64", media_type: b.source.media_type, data: b.source.data } });
+      }
+    }
+  }
+  return out;
+}
+
 exports.handler = async (event) => {
   const headers = { "Content-Type": "application/json" };
 
@@ -298,11 +334,17 @@ exports.handler = async (event) => {
     return { statusCode: 400, headers, body: JSON.stringify({ error: "messages must be a non-empty array" }) };
   }
 
-  // Keep only role/content, and bound history length to control cost.
-  const clean = messages
-    .filter((m) => m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string")
-    .map((m) => ({ role: m.role, content: m.content }))
-    .slice(-40);
+  // Keep role + content (string or block array), bound history, normalize images.
+  const filtered = messages.filter(
+    (m) =>
+      m &&
+      (m.role === "user" || m.role === "assistant") &&
+      (typeof m.content === "string" || Array.isArray(m.content))
+  );
+  const sliced = filtered.slice(-40);
+  const clean = sliced
+    .map((m, i) => ({ role: m.role, content: sanitizeContent(m.content, i === sliced.length - 1) }))
+    .filter((m) => (typeof m.content === "string" ? m.content.length > 0 : m.content.length > 0));
 
   if (clean.length === 0 || clean[0].role !== "user") {
     // The first turn must be a user message for the API. If the UI seeded an
@@ -327,7 +369,7 @@ exports.handler = async (event) => {
         system: [
           {
             type: "text",
-            text: PERSONAS[persona].system,
+            text: PERSONAS[persona].system + IMAGE_NOTE,
             cache_control: { type: "ephemeral" },
           },
         ],
