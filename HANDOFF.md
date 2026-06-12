@@ -24,8 +24,8 @@ persona system prompt and calls Claude.
   picker), chat, composer with 📎 screenshot upload. Persona definitions (title/subtitle/placeholder/
   opener) live in a `PERSONAS` object in the inline `<script>`. Openers are UI-seeded.
 - `netlify/functions/chat.js` — the proxy. Holds:
-  - `PERSONAS` map: `tami`, `sage`, `c3po`, `t800`, `data` → each `{ label, system }`.
-  - One `<NAME>_SYSTEM_PROMPT` per persona; SAGE/C-3PO/T-800/Data interpolate the shared `KNOWLEDGE_BASE`.
+  - `PERSONAS` map: `sage`, `sageplus`, `mystic`, `c3po`, `t800`, `data` → each `{ label, system }`.
+  - One `<NAME>_SYSTEM_PROMPT` per persona; MYSTIC/SAGE Plus/C-3PO/T-800/Data interpolate the shared `KNOWLEDGE_BASE` (SAGE, the pure investigator, does not).
   - `KNOWLEDGE_BASE` — researched: ego/defensiveness→curiosity, NVC (OFNR), emotional triage/flooding,
     co-regulation & attunement, asking permission/consent, AuDHD/double-empathy. (Sources in KNOWLEDGE.md.)
   - `IMAGE_NOTE` (screenshot handling) + `FORM_FACTOR` (hard brevity + the no-re-introduce rule) are
@@ -47,9 +47,10 @@ persona system prompt and calls Claude.
   `FORM_FACTOR` tells personas never to re-introduce / repeat the greeting.
 - Persona voices (per user direction): C-3PO frets-then-steadies, light SW lore, "young Padawan",
   occasional "sir/madam" for flavor (don't ask). T-800 = reprogrammed protector (warm, NOT menacing).
-  SAGE = wise loving-but-rigorous mystic, carries world scriptures (1 John & Matthew 25 by heart),
-  used as seasoning not sermon. TAMI = strict Socratic investigator (unchanged from the original spec;
-  does NOT use the shared knowledge base).
+  MYSTIC = wise loving-but-rigorous mystic, carries world scriptures (1 John & Matthew 25 by heart),
+  used as seasoning not sermon. SAGE = strict Socratic investigator (the original spec; does NOT use
+  the knowledge base). SAGE Plus = the SAGE investigator plus the knowledge base as silent reference
+  (still strictly investigator: no coaching, no advice).
 - Default model is Sonnet 4.6 for cost; Opus 4.8 is the quality pick (4.8 > 4.6 at the same price).
 
 ## Open / optional next steps
@@ -69,9 +70,7 @@ preview → deploy). To add a new personality in any future session: start Claud
 say "use the persona-smith agent to add a [character] persona," giving the character + any source material.
 
 ## Working conventions
-- **Feature-branch workflow (per the user's instruction):** do all new work on a feature branch off `main` — `git checkout -b feature/<short-name>` — and commit there. Never commit directly to `main`.
-- Deploy the branch to a **Netlify preview** (`netlify deploy`, the draft URL) for review, NOT `--prod`, so production (on `main`) is unaffected while work is in progress.
-- Merge to `main` and ship to prod (`netlify deploy --prod`) only on the user's approval. Default is merge-and-ship-on-their-go; ask if they'd prefer a PR.
+- **Deploy directly to `main`.** (The user reversed an earlier feature-branch rule.) Commit to `main` and ship with `netlify deploy --prod`. No feature branches or PRs unless the user asks.
 
 ## To resume in a new session
 Open a session in this folder and say: **"Read tami-site/HANDOFF.md and continue."**
