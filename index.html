@@ -59,18 +59,6 @@
     cursor: pointer;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   }
-  header .model-row { margin-top: 9px; font-size: 11px; color: var(--muted); }
-  header .model-row label { margin-right: 6px; }
-  header .model-select {
-    font: inherit;
-    font-size: 11px;
-    padding: 4px 22px 4px 10px;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    background: #fff;
-    color: var(--ink);
-    cursor: pointer;
-  }
   #chat {
     flex: 1 1 auto;
     overflow-y: auto;
@@ -224,15 +212,6 @@
       <option value="sageplus">SAGE Plus — investigator + knowledge base</option>
       <option value="mystic">MYSTIC — a wise mystic</option>
     </select>
-    <div class="model-row">
-      <label for="model">Model</label>
-      <select id="model" class="model-select" aria-label="Choose the model">
-        <option value="claude-sonnet-4-6">Sonnet · balanced (default)</option>
-        <option value="claude-opus-4-8">Opus · high quality (pricier)</option>
-        <option value="claude-fable-5">Fable 5 · most capable (priciest)</option>
-        <option value="claude-haiku-4-5">Haiku · fastest &amp; cheapest</option>
-      </select>
-    </div>
   </header>
 
   <div id="chat" aria-live="polite"></div>
@@ -300,14 +279,9 @@
   const input = document.getElementById("input");
   const send = document.getElementById("send");
   const personaSelect = document.getElementById("persona");
-  const modelSelect = document.getElementById("model");
   const title = document.getElementById("title");
   const subtitle = document.getElementById("subtitle");
 
-  // Remember the chosen model across the session.
-  const savedModel = sessionStorage.getItem("tami_model");
-  if (savedModel) modelSelect.value = savedModel;
-  modelSelect.addEventListener("change", () => sessionStorage.setItem("tami_model", modelSelect.value));
   const attach = document.getElementById("attach");
   const fileInput = document.getElementById("file");
   const preview = document.getElementById("preview");
@@ -383,7 +357,7 @@
     return fetch("/.netlify/functions/chat", {
       method: "POST",
       headers: h,
-      body: JSON.stringify({ messages: history, persona: current, model: modelSelect.value }),
+      body: JSON.stringify({ messages: history, persona: current }),
     });
   }
 
