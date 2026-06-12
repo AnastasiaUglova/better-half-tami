@@ -68,5 +68,10 @@ workflow (research voice → write prompt over the shared knowledge base → wir
 preview → deploy). To add a new personality in any future session: start Claude Code in this project and
 say "use the persona-smith agent to add a [character] persona," giving the character + any source material.
 
+## Working conventions
+- **Feature-branch workflow (per the user's instruction):** do all new work on a feature branch off `main` — `git checkout -b feature/<short-name>` — and commit there. Never commit directly to `main`.
+- Deploy the branch to a **Netlify preview** (`netlify deploy`, the draft URL) for review, NOT `--prod`, so production (on `main`) is unaffected while work is in progress.
+- Merge to `main` and ship to prod (`netlify deploy --prod`) only on the user's approval. Default is merge-and-ship-on-their-go; ask if they'd prefer a PR.
+
 ## To resume in a new session
 Open a session in this folder and say: **"Read tami-site/HANDOFF.md and continue."**
