@@ -220,8 +220,9 @@
     <h1 id="title">TAMI</h1>
     <p id="subtitle">A relational investigator</p>
     <select id="persona" class="persona-select" aria-label="Choose who you're talking to">
-      <option value="tami">TAMI — relational investigator</option>
-      <option value="sage">SAGE — a wise mystic</option>
+      <option value="sage">SAGE — relational investigator</option>
+      <option value="sageplus">SAGE Plus — investigator + knowledge base</option>
+      <option value="mystic">MYSTIC — a wise mystic</option>
       <option value="c3po">Jedi Master C-3PO — Human-Cyborg Relations</option>
       <option value="t800">T-800 — reprogrammed terminator</option>
       <option value="data">Lt. Cmdr Data — student of humanity</option>
@@ -254,14 +255,20 @@
   // Personas. To add one: add an entry here AND an <option> in the header,
   // plus a matching entry in PERSONAS inside netlify/functions/chat.js.
   const PERSONAS = {
-    tami: {
-      title: "TAMI",
-      subtitle: "A relational investigator",
-      placeholder: "Tell TAMI about a moment that's stayed with you…",
-      opener: "I'm here. Tell me about one interaction that's stayed with you. One specific moment with someone. What happened?",
-    },
     sage: {
       title: "SAGE",
+      subtitle: "A relational investigator",
+      placeholder: "Tell SAGE about a moment that's stayed with you…",
+      opener: "I'm here. Tell me about one interaction that's stayed with you. One specific moment with someone. What happened?",
+    },
+    sageplus: {
+      title: "SAGE Plus",
+      subtitle: "Investigator + knowledge base",
+      placeholder: "Tell me about a moment that's stayed with you…",
+      opener: "I'm here. Tell me about one interaction that's stayed with you. One specific moment with someone. What happened?",
+    },
+    mystic: {
+      title: "MYSTIC",
       subtitle: "A wise mystic",
       placeholder: "What's got you tangled up today?",
       opener: "I'm here to help you walk into a hard conversation feeling regulated, moisturized, in your lane, and positively thriving. So, what's got you tangled up today? Maybe we can get it straightened out.",
@@ -286,7 +293,7 @@
     },
   };
 
-  let current = "tami";
+  let current = "sage";
   // Message history for the current persona, seeded with its opener. Reset on
   // every persona switch. The API treats the first user turn as the start.
   let history = [];
